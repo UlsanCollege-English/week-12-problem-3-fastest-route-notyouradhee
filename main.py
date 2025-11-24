@@ -1,6 +1,3 @@
-
-## main.py
-```python
 import heapq
 
 
@@ -27,7 +24,43 @@ def dijkstra_shortest_path(graph, start, goal):
     # TODO Step 7: Test with small graphs where you know the correct answer.
     # TODO Step 8: Check that your solution's complexity is about O((V + E) log V).
 
-    raise NotImplementedError("dijkstra_shortest_path is not implemented yet")
+    if start not in graph or goal not in graph:
+        return ([], None)
+    
+    if start == goal:
+        return ([start], 0)
+    
+    dist = {node: float('inf') for node in graph}
+    dist[start] = 0
+    parent = {}
+    heap = [(0, start)]
+    
+    while heap:
+        current_dist, node = heapq.heappop(heap)
+        
+        if current_dist > dist[node]:
+            continue
+        
+        for neighbor, weight in graph[node]:
+            new_dist = current_dist + weight
+            
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+                parent[neighbor] = node
+                heapq.heappush(heap, (new_dist, neighbor))
+    
+    if dist[goal] == float('inf'):
+        return ([], None)
+    
+    path = []
+    current = goal
+    while current != start:
+        path.append(current)
+        current = parent[current]
+    path.append(start)
+    path.reverse()
+    
+    return (path, dist[goal])
 
 
 if __name__ == "__main__":
